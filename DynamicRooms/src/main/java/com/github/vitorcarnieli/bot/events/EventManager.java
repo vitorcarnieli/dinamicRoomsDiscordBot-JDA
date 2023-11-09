@@ -7,6 +7,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class EventManager extends ListenerAdapter {
 
@@ -18,7 +22,6 @@ public class EventManager extends ListenerAdapter {
 
             VoiceChannel channel = Objects.requireNonNull(event.getChannelLeft()).asVoiceChannel();
             String identifier = channel.getName().split("_")[1];
-            System.out.println(identifier);
             if (!channel.getName().contains("voice_")) return;
             deleteRoom(channel);
 
@@ -38,35 +41,40 @@ public class EventManager extends ListenerAdapter {
         }
     }
 
-    private void deleteRoom(VoiceChannel channel) throws InterruptedException {
+    private void deleteRoom(VoiceChannel channel) {
         String identifier = channel.getName().split("_")[1];
-        int cont = 0;
-        boolean isEmpty = true;
 
-        do {
-            Thread.sleep(60000);
-            if (channel.getMembers().isEmpty()) {
-                System.out.println("canal is empty");
-            } else {
-                isEmpty = false;
-                break;
-            }
-            cont++;
-        } while (cont < 5);
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        if (isEmpty) {
-            Objects.requireNonNull(channel.getParentCategory()).getVoiceChannels().forEach(v -> v.delete().queue());
-            channel.getParentCategory().getTextChannels().forEach(t -> t.delete().queue());
-            channel.getParentCategory().delete().queue();
-            channel.getGuild().getRoles().forEach(r -> {
-                if (r.getName().contains(identifier)) {
-                    r.delete().queue();
+        AtomicInteger delay = new AtomicInteger(1);
+        int interval = 1;
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                if (!channel.getMembers().isEmpty()) {
+                    scheduler.shutdown();
                     return;
                 }
-            });
-        }
-    }
 
+                if (delay.get() >= 5) {
+                    scheduler.shutdown();
+
+                    Objects.requireNonNull(channel.getParentCategory()).getVoiceChannels().forEach(v -> v.delete().queue());
+                    channel.getParentCategory().getTextChannels().forEach(t -> t.delete().queue());
+                    channel.getParentCategory().delete().queue();
+                    channel.getGuild().getRoles().forEach(r -> {
+                        if (r.getName().contains(identifier)) {
+                            r.delete().queue();
+                            return;
+                        }
+                    });
+                }
+
+                delay.getAndIncrement();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 0, interval, TimeUnit.MINUTES);
+    }
 
 }
 

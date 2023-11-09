@@ -28,11 +28,28 @@
             <version>5.0.0-beta.17</version>
         </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/com.jagrosh/jda-utilities -->
+        <dependency>
+            <groupId>com.jagrosh</groupId>
+            <artifactId>jda-utilities</artifactId>
+            <version>3.0.2</version>
+            <type>pom</type>
+        </dependency>
+
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>java-dotenv</artifactId>
             <version>5.2.2</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
 
 </project>

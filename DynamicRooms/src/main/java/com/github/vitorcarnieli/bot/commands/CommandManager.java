@@ -23,7 +23,7 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         if (event.getName().equals("dyrm")) {
-            event.reply("## Criando sala...\n*selecione os usuários que poderam visualizar e entrar em seus canais:*").addActionRow(EntitySelectMenu.create("menu:users", EntitySelectMenu.SelectTarget.USER).setRequiredRange(2, 25).build()).queue();
+            event.reply("## Criando sala...\n*selecione os usuários que poderam visualizar e entrar em sua sala:*").addActionRow(EntitySelectMenu.create("menu:users", EntitySelectMenu.SelectTarget.USER).setRequiredRange(2, 25).build()).queue();
         }
     }
 
