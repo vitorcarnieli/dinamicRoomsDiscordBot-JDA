@@ -23,19 +23,16 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         if (event.getName().equals("dyrm")) {
-            EntitySelectMenu menu = EntitySelectMenu.create("menu:users", EntitySelectMenu.SelectTarget.USER)
-                    .setRequiredRange(2, 25)
-                    .build();
-
-
+            event.reply("## Criando sala...\n*selecione os usuários que poderam visualizar e entrar em seus canais:*").addActionRow(EntitySelectMenu.create("menu:users", EntitySelectMenu.SelectTarget.USER).setRequiredRange(2, 25).build()).queue();
         }
     }
 
     @Override
     public void onEntitySelectInteraction(@NotNull EntitySelectInteractionEvent event) {
-        if (event.getComponentId().equals("menu:users")) {
 
-            String roleName = event.getUser().getName() + "-ROOM-" + new Date().getTime();
+        if (event.getComponentId().equals("menu:users")) {
+            String time = new Date().getTime() + "";
+            String roleName = event.getUser().getName() + "-ROOM_" + time;
 
             Role role = Objects.requireNonNull(event.getGuild()).createRole().setName(roleName).complete();
 
@@ -47,8 +44,8 @@ public class CommandManager extends ListenerAdapter {
             Category category = event.getGuild().createCategory(roleName).complete();
             category.upsertPermissionOverride(role).setAllowed(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT).queue();
             category.upsertPermissionOverride(event.getGuild().getPublicRole()).deny(Permission.VIEW_CHANNEL).queue();
-            category.createTextChannel("txt").queue();
-            category.createVoiceChannel("voice").queue();
+            category.createTextChannel("txt_" + time).queue();
+            category.createVoiceChannel("voice_" + time).queue();
             event.reply("ok").queue();
         }
     }
@@ -56,15 +53,9 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onGuildReady(GuildReadyEvent event) {
         List<CommandData> comandData = new ArrayList<>();
-        comandData.forEach(i -> {
-            if (i.equals(Commands.slash("dyrm", "create room"))) return;
-        });
         comandData.add((Commands.slash("dyrm", "create room")));
-        event.getGuild().updateCommands().addCommands(comandData).queue();
 
+        event.getGuild().updateCommands().addCommands(comandData).queue();
     }
 
-    //TODO: delete channels when category is destroyed
-    //TODO: implements delete empty category after 5 minutes
-    //TODO: bug, create 2 channels
 }
