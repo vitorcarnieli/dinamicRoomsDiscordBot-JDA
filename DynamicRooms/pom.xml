@@ -29,14 +29,6 @@
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/com.jagrosh/jda-utilities -->
-        <dependency>
-            <groupId>com.jagrosh</groupId>
-            <artifactId>jda-utilities</artifactId>
-            <version>3.0.2</version>
-            <type>pom</type>
-        </dependency>
-
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>java-dotenv</artifactId>

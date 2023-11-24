@@ -30,7 +30,7 @@ public class BotMain {
                 .setMemberCachePolicy(MemberCachePolicy.ALL);
 
         builder.setStatus(OnlineStatus.ONLINE);
-        builder.setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS, "Gerenciando"));
+        builder.setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS, "/dyrm"));
 
         SHARD_MANAGER = builder.build();
         SHARD_MANAGER.addEventListener(new CommandManager(), new EventManager());

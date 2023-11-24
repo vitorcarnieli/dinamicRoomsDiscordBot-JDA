@@ -6,6 +6,8 @@ Bot destinado à criação de salas privadas e recicláveis de forma rápida e s
 
 ## Uso:
  - Basta digitar o comando `/dyrm` e escolher, dentre os integrantes do servidor, quem pode entrar na sua sala.
+ - Basta digitar o comando `/dyrm-add` e escolher, dentre os integrantes do servidor, quem você gostaria de adicionar a sua sala já existente.
+
 
 ## Explicações:
  - Uma sala é composta por: uma categoria, um canal de voz e um canal de texto, ambos só podem ser vistos e acessados pelos usuários selecionados ao usar o comando `/dyrm`.

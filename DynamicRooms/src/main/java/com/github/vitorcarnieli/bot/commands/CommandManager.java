@@ -24,6 +24,8 @@ public class CommandManager extends ListenerAdapter {
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         if (event.getName().equals("dyrm")) {
             event.reply("## Criando sala...\n*selecione os usuários que poderam visualizar e entrar em sua sala:*").addActionRow(EntitySelectMenu.create("menu:users", EntitySelectMenu.SelectTarget.USER).setRequiredRange(2, 25).build()).queue();
+        } else if (event.getName().equals("dyrm-add")) {
+            event.reply("## Adicionando novo usuário a sua sala...\n*selecione os usuários que poderam visualizar e entrar em sua sala:*").addActionRow(EntitySelectMenu.create("menu:users-add", EntitySelectMenu.SelectTarget.USER).setRequiredRange(2, 25).build()).queue();
         }
     }
 
@@ -46,7 +48,24 @@ public class CommandManager extends ListenerAdapter {
             category.upsertPermissionOverride(event.getGuild().getPublicRole()).deny(Permission.VIEW_CHANNEL).queue();
             category.createTextChannel("txt_" + time).queue();
             category.createVoiceChannel("voice_" + time).queue();
+            event.getMessage().delete().queue();
+
             event.reply("ok").queue();
+            return;
+        } else if (event.getComponentId().equals("menu:users-add")) {
+            event.getMember().getRoles().forEach(role -> {
+                if (role.getName().contains(event.getUser().getName())) {
+                    event.getMentions().getUsers().forEach(user -> {
+                        event.getGuild().addRoleToMember(user, role).queue();
+                    });
+                    event.getMessage().delete().queue();
+                    event.reply("ok").queue();
+                    return;
+                }
+            });
+            event.getMessage().delete().queue();
+            event.reply("Você não possui uma sala!").queue();
+            return;
         }
     }
 
@@ -54,6 +73,7 @@ public class CommandManager extends ListenerAdapter {
     public void onGuildReady(GuildReadyEvent event) {
         List<CommandData> comandData = new ArrayList<>();
         comandData.add((Commands.slash("dyrm", "create room")));
+        comandData.add((Commands.slash("dyrm-add", "add new member in to your room")));
 
         event.getGuild().updateCommands().addCommands(comandData).queue();
     }

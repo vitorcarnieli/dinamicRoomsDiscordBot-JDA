@@ -42,6 +42,7 @@ public class EventManager extends ListenerAdapter {
     }
 
     private void deleteRoom(VoiceChannel channel) {
+        System.out.println("começou");
         String identifier = channel.getName().split("_")[1];
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -67,6 +68,11 @@ public class EventManager extends ListenerAdapter {
                             return;
                         }
                     });
+                }
+                if (Integer.parseInt(delay.toString()) > 1) {
+                    channel.getParentCategory().getTextChannels().get(0).sendMessage("deletando sala em " + (6 - Integer.parseInt(delay.toString()))+ " minutos por inatividade!").queue();
+                } else {
+                    channel.getParentCategory().getTextChannels().get(0).sendMessage("deletando sala em " + (6 - Integer.parseInt(delay.toString()))+ " minuto por inatividade!").queue();
                 }
 
                 delay.getAndIncrement();
